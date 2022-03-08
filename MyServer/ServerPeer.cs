@@ -27,6 +27,20 @@ namespace MyServer
         private ClientPeerPool clientPeerPool;
 
         /// <summary>
+        /// 应用层
+        /// </summary>
+        private IApplication application { get; set; }
+
+        /// <summary>
+        /// 设置应用层参数
+        /// </summary>
+        /// <param name="application"></param>
+        public void SetApplication(IApplication application)
+        {
+            this.application = application;
+        }
+
+        /// <summary>
         /// 开启服务器
         /// </summary>
         /// <param name="ip"></param>
@@ -196,7 +210,8 @@ namespace MyServer
         /// <param name="msg"></param>
         private void ReceiveProcessCompleted(ClientPeer client, NetMsg msg)
         {
-            // TODO:
+            // 交给应用层处理这个消息
+            application.Receive(client, msg);
         }
 
         #endregion
@@ -218,6 +233,8 @@ namespace MyServer
                 }
 
                 Console.WriteLine(client.clientSocket.RemoteEndPoint + "客户端断开连接，原因: " + reason);
+                application.Disconnect(client);
+                // 让客户端处理断开连接
                 client.Disconnect();
 
                 // 将对象返回给池
