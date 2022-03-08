@@ -14,6 +14,18 @@ namespace MyServer
         /// </summary>
         public Socket clientSocket { get; set; }
 
+        private NetMsg msg { get; set; }
+
+        public ClientPeer()
+        {
+            msg = new NetMsg();
+            ReceiveArgs = new SocketAsyncEventArgs();
+            ReceiveArgs.UserToken = this;
+            ReceiveArgs.SetBuffer(new byte[2048], 0, 2048);
+        }
+
+        #region 接收数据
+
         /// <summary>
         /// 接收的异步套接字操作
         /// </summary>
@@ -36,13 +48,6 @@ namespace MyServer
         /// <param name="msg"></param>
         public delegate void ReceiveCompleted(ClientPeer client, NetMsg msg);
         public ReceiveCompleted receiveCompleted;
-
-        public ClientPeer()
-        {
-            ReceiveArgs = new SocketAsyncEventArgs();
-            ReceiveArgs.UserToken = this;
-            ReceiveArgs.SetBuffer(new byte[2048], 0, 2048);
-        }
 
         /// <summary>
         /// 处理接收的数据
@@ -81,12 +86,52 @@ namespace MyServer
             ProcessData();
         }
 
+        #endregion
+
+        #region 发送消息
+
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="opCode"></param>
+        /// <param name="subCode"></param>
+        /// <param name="value"></param>
+        public void SendMsg(int opCode, int subCode, object value)
+        {
+            msg.Change(opCode, subCode, value);
+            byte[] data = EncodeTool.EncodeMsg(msg);
+            byte[] packet = EncodeTool.EncodePacket(data);
+            SendMsg(packet);
+        }
+
+        private void SendMsg(byte[] packet)
+        {
+            try
+            {
+                clientSocket.Send(packet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        #endregion
+
+        #region 断开连接
+
         /// <summary>
         /// 客户端断开连接
         /// </summary>
         public void Disconnect()
         {
-
+            cache.Clear();
+            isProcessingReceive = false;
+            clientSocket.Shutdown(SocketShutdown.Both);
+            clientSocket.Close();
+            clientSocket = null;
         }
+
+        #endregion
     }
 }
