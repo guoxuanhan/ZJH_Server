@@ -121,7 +121,7 @@ namespace MyServer
             semaphore.WaitOne();
             ClientPeer clientPeer = clientPeerPool.Dequeue(); //new ClientPeer();
             clientPeer.clientSocket = e.AcceptSocket;
-            Console.WriteLine(clientPeer.clientSocket.LocalEndPoint + "客户端连接成功");
+            Console.WriteLine(clientPeer.clientSocket.RemoteEndPoint + "客户端连接成功");
             // 接收消息TODO
             StartReceive(clientPeer);
 
