@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\AccountHandler.cs" />
+    <Compile Include="Logic\ChatHandler.cs" />
+    <Compile Include="Logic\FightHandler.cs" />
+    <Compile Include="Logic\IHandler.cs" />
+    <Compile Include="Logic\MatchHandler.cs" />
     <Compile Include="NetMsgCenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
