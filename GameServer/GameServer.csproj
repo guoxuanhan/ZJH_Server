@@ -61,7 +61,7 @@
       <Name>MyServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
-      <Project>{4F86E609-2E17-4D12-AA45-DAF5B031B0D8}</Project>
+      <Project>{4f86e609-2e17-4d12-aa45-daf5b031b0d8}</Project>
       <Name>Protocol</Name>
     </ProjectReference>
   </ItemGroup>
